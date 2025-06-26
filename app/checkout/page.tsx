@@ -5,6 +5,18 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 
+// Add productImages mapping for fallback
+const productImages: Record<string, string> = {
+  "Precision Cleats": "/footballcleats.jpg",
+  "Team Jersey": "/teamjersey.jpg",
+  "Football ProX": "/football2.jpg",
+  "Performance Football Cleats": "/cleats.jpg",
+  "Training Football": "/football1.jpg",
+  "Football Gloves": "/gloves.jpg",
+  "Goalkeeper Gloves": "/goalkeepergloves.jpg",
+  "Football Shorts": "/shorts.jpg",
+}
+
 export default function CheckoutPage() {
   const { items, getTotalPrice, clearCart } = useCartStore()
   const [discountCode, setDiscountCode] = useState("")
@@ -54,7 +66,18 @@ export default function CheckoutPage() {
               {items.map((item) => (
                 <div key={item.id} className="flex items-center justify-between border-b pb-2">
                   <div className="flex items-center space-x-3">
-                    <img src={item.image} alt={item.name} className="w-12 h-12 object-contain bg-gray-100 rounded" />
+                    <img
+                      src={
+                        productImages[item.name] ||
+                        item.image ||
+                        "/placeholder.svg"
+                      }
+                      alt={item.name}
+                      className="w-12 h-12 object-contain bg-gray-100 rounded"
+                      onError={e => {
+                        (e.currentTarget as HTMLImageElement).src = "/placeholder.svg"
+                      }}
+                    />
                     <div>
                       <div className="font-medium">{item.name}</div>
                       <div className="text-sm text-gray-500">x{item.quantity}</div>

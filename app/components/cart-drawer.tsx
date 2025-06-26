@@ -6,6 +6,19 @@ import { Button } from "@/components/ui/button"
 import { useCartStore } from "@/lib/store"
 import { useRouter } from "next/navigation"
 
+// Add productImages mapping for fallback
+const productImages: Record<string, string> = {
+  "Precision Cleats": "/footballcleats.jpg",
+  "Team Jersey": "/teamjersey.jpg",
+  "Football ProX": "/football2.jpg",
+  "Performance Football Cleats": "/cleats.jpg",
+  "Training Football": "/football1.jpg",
+  "Football Gloves": "/gloves.jpg",
+  "Goalkeeper Gloves": "/goalkeepergloves.jpg",
+  "Football Shorts": "/shorts.jpg",
+  // ...add more as needed
+}
+
 export default function CartDrawer() {
   const { items, isOpen, closeCart, updateQuantity, removeItem, clearCart, getTotalPrice } = useCartStore()
   const router = useRouter()
@@ -60,9 +73,16 @@ export default function CartDrawer() {
                       className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg"
                     >
                       <img
-                        src={item.image || "/placeholder.svg"}
+                        src={
+                          productImages[item.name] ||
+                          item.image ||
+                          "/placeholder.svg"
+                        }
                         alt={item.name}
                         className="w-16 h-16 object-contain bg-white rounded"
+                        onError={e => {
+                          (e.currentTarget as HTMLImageElement).src = "/placeholder.svg"
+                        }}
                       />
                       <div className="flex-1">
                         <h4 className="font-medium text-gray-900">{item.name}</h4>
